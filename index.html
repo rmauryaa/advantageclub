@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Company Assignment</title>
+  <style>
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      border: 2px solid black;
+      padding: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Company Assignment</h1>
+  <div id="main" class="grid">Loading page</div>
+
+  <script>
+    async function fetehClubsApi() {
+      const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+      const posts = await res.json();
+
+      const main = document.getElementById('main');
+      main.innerHTML = '';
+
+      posts.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+        postDiv.innerHTML = `
+          <div>${post.title}</div>
+          <div>${post.body}</div>
+          <div  id="user-${post.id}">User Loading</div>
+        `;
+        main.appendChild(postDiv);
+
+        fetch(`https://jsonplaceholder.typicode.com/users/${post.userId}`)
+          .then(res => res.json())
+          .then(user => {
+            document.getElementById(`user-${post.id}`).innerHTML = `${user.name} (${user.email})`;
+          });
+      });
+    }
+
+    fetehClubsApi();
+  </script>
+</body>
+</html>
